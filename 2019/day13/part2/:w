@@ -1,0 +1,90 @@
+package main
+
+import (
+	"sync"
+	"time"
+
+	"github.com/nsf/termbox-go"
+)
+
+// OutputState ...
+type OutputState int64
+
+// ...
+const (
+	OutputStateX      OutputState = iota
+	OutputStateY                  = iota
+	OutputStateTileID             = iota
+	OutputStateCnt                = iota
+)
+
+// TileID ...
+type TileID int64
+
+// ...
+const (
+	TileIDEmpty  TileID = iota
+	TileIDWall          = iota
+	TileIDBlock         = iota
+	TileIDPaddle        = iota
+	TileIDBall          = iota
+)
+
+// Tile ...
+type Tile struct {
+	x, y   int64
+	tileID TileID
+}
+
+func main() {
+	initScreen()
+
+	prog := newProgram(initProgram)
+
+	// play for free
+	prog.instructions[0] = 2
+
+	termbox.Init()
+	defer termbox.Close()
+
+	inputCb := getInputCallback()
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		run(prog, inputCb, outputCallback)
+		wg.Done()
+	}()
+
+	wg.Wait()
+}
+
+func getInputCallback() func() int64 {
+	keyPressedCh := make(chan rune, 5)
+	go func() {
+		switch ev := termbox.PollEvent(); ev.Type {
+		case termbox.EventKey:
+			keyPressedCh <- ev.Ch
+		}
+
+	}()
+
+	return func() int64 {
+		time.Sleep(250 * time.Millisecond)
+		showScreen()
+		showScore()
+
+		ch := 's'
+		select {
+		case ch = <-keyPressedCh:
+		case <-time.After(100*time.Millisecond):
+		}
+
+		if ch == 'a' {
+			return -1
+		} else if ch == 'd' {
+			return 1
+		} else {
+			return 0
+		}
+	}
+}
