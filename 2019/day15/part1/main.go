@@ -160,7 +160,7 @@ func outputCallback(val int64) {
 
 	fmt.Println("Drawing screen")
 	showScreen()
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(50 * time.Millisecond)
 }
 
 func chooseNextStep(robot *Robot) (MovementState, bool) {
