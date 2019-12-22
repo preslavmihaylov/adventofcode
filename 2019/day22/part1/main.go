@@ -84,7 +84,7 @@ func stackShuffle(deck []int) {
 
 func newDeck() []int {
 	res := []int{}
-	for i := 0; i < 10151; i++ {
+	for i := 0; i < 10007; i++ {
 		res = append(res, i)
 	}
 
