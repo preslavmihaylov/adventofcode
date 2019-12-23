@@ -80,53 +80,6 @@ func isInBounds(p Point) bool {
 	return p.row >= 0 && p.row < len(screen) && p.col >= 0 && p.col < len(screen[row])
 }
 
-// func nextStep(p Point, dir Direction) (Point, Direction) {
-// 	switch dir {
-// 	case DirectionUp:
-// 		p.row--
-// 	case DirectionRight:
-// 		p.col++
-// 	case DirectionDown:
-// 		p.row++
-// 	case DirectionLeft:
-// 		p.col--
-// 	default:
-// 		panic("invalid direction")
-// 	}
-
-// 	// TODO: provide direction to resolveCrossway
-// 	if p.row < 0 || p.row >= len(screen) || p.col < 0 || p.col >= len(screen[p.row]) {
-// 		return resolveCrossway(p)
-// 	} else if screen[p.row][p.col] != '#' {
-// 		return resolveCrossway(p)
-// 	}
-
-// 	return p, dir
-// }
-
-// func resolveCrossway(p Point) (Point, Direction) {
-// 	up, down, left, right :=
-// 		Point{p.row - 1, p.col}, Point{p.row + 1, p.col}, Point{p.row, p.col - 1}, Point{p.row, p.col + 1}
-
-// 	var scaffoldPoint Point
-// 	var dir Direction
-// 	if screen[up.row][up.col] == '#' {
-// 		scaffoldPoint = Point{up.row, up.col}
-// 		dir = DirectionUp
-// 	} else if screen[right.row][right.col] == '#' {
-// 		scaffoldPoint = Point{right.row, right.col}
-// 		dir = DirectionRight
-// 	} else if screen[down.row][down.col] == '#' {
-// 		scaffoldPoint = Point{down.row, down.col}
-// 		dir = DirectionDown
-// 	} else if screen[left.row][left.col] == '#' {
-// 		scaffoldPoint = Point{left.row, left.col}
-// 		dir = DirectionLeft
-// 	}
-
-// 	return scaffoldPoint, dir
-// }
-
 func inputCallback() int64 {
 	return 0
 }
