@@ -12,15 +12,84 @@ type moon struct {
 	dx, dy, dz int64
 }
 
-func (m *moon) String() string {
-	return fmt.Sprintf("pos=<x=%d, y=%d, z=%d>, vel=<x=%d, y=%d, z=%d>",
-		m.x, m.y, m.z, m.dx, m.dy, m.dz)
-}
-
 func main() {
 	moons := readInput("input.txt")
 	steps := timesUntilRepeatedState(moons)
 	fmt.Println(steps)
+}
+
+func timesUntilRepeatedState(moons []*moon) int64 {
+	xs, dxs := []int64{}, []int64{}
+	ys, dys := []int64{}, []int64{}
+	zs, dzs := []int64{}, []int64{}
+	for i := range moons {
+		xs = append(xs, moons[i].x)
+		ys = append(ys, moons[i].y)
+		zs = append(zs, moons[i].z)
+		dxs = append(dxs, moons[i].dx)
+		dys = append(dys, moons[i].dy)
+		dzs = append(dzs, moons[i].dz)
+	}
+
+	xSteps := stepsUntilLoop(xs, dxs)
+	ySteps := stepsUntilLoop(ys, dys)
+	zSteps := stepsUntilLoop(zs, dzs)
+
+	return lcm(xSteps, ySteps, zSteps)
+}
+
+func stepsUntilLoop(v, dv []int64) int64 {
+	seen := map[string]bool{}
+	steps := int64(0)
+	for !seen[stateHash(v, dv)] {
+		seen[stateHash(v, dv)] = true
+		for i := 0; i < len(v); i++ {
+			for j := i + 1; j < len(v); j++ {
+				first, second := v[i], v[j]
+				if first > second {
+					dv[i]--
+					dv[j]++
+				} else if first < second {
+					dv[i]++
+					dv[j]--
+				}
+			}
+		}
+
+		for i := range v {
+			v[i] += dv[i]
+		}
+
+		steps++
+	}
+
+	return steps
+}
+
+func lcm(nums ...int64) int64 {
+	ans := nums[0]
+	for i := 0; i < len(nums); i++ {
+		ans = (nums[i] * ans) / gcd(nums[i], ans)
+	}
+
+	return ans
+}
+
+func gcd(a, b int64) int64 {
+	if b == 0 {
+		return a
+	}
+
+	return gcd(b, a%b)
+}
+
+func stateHash(v, dv []int64) string {
+	hash := ""
+	for i := range v {
+		hash += fmt.Sprintf("%d-%d|", v[i], dv[i])
+	}
+
+	return hash
 }
 
 func readInput(filename string) []*moon {
@@ -54,86 +123,4 @@ func readInput(filename string) []*moon {
 	}
 
 	return moons
-}
-
-func timesUntilRepeatedState(moons []*moon) int64 {
-	slowerMoons := make([]*moon, len(moons))
-	fasterMoons := moons
-	for i := range moons {
-		slowerMoons[i] = &moon{moons[i].x, moons[i].y, moons[i].z, moons[i].dx, moons[i].dy, moons[i].dz}
-	}
-
-	slowerStep := int64(0)
-	fasterStep := int64(0)
-	for {
-		makeStep(slowerMoons)
-		slowerStep++
-
-		makeStep(fasterMoons)
-		makeStep(fasterMoons)
-		fasterStep++
-		fasterStep++
-		if slowerStep%100000000 == 0 {
-			fmt.Println(slowerStep)
-		}
-
-		if stateHash(slowerMoons) == stateHash(fasterMoons) {
-			return slowerStep
-		}
-	}
-}
-
-func makeStep(moons []*moon) {
-	for i := 0; i < len(moons); i++ {
-		for j := i + 1; j < len(moons); j++ {
-			if i == j {
-				continue
-			}
-
-			first, second := moons[i], moons[j]
-			if first.x > second.x {
-				first.dx--
-				second.dx++
-			} else if first.x < second.x {
-				first.dx++
-				second.dx--
-			}
-
-			if first.y > second.y {
-				first.dy--
-				second.dy++
-			} else if first.y < second.y {
-				first.dy++
-				second.dy--
-			}
-
-			if first.z > second.z {
-				first.dz--
-				second.dz++
-			} else if first.z < second.z {
-				first.dz++
-				second.dz--
-			}
-		}
-	}
-
-	for i := range moons {
-		moons[i].x += moons[i].dx
-		moons[i].y += moons[i].dy
-		moons[i].z += moons[i].dz
-	}
-}
-
-func stateHash(moons []*moon) int64 {
-	hash := int64(17)
-	for _, m := range moons {
-		hash = hash*31 + m.x
-		hash = hash*31 + m.y
-		hash = hash*31 + m.z
-		hash = hash*31 + m.dx
-		hash = hash*31 + m.dy
-		hash = hash*31 + m.dz
-	}
-
-	return hash
 }
