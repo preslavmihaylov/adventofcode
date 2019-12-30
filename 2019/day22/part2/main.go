@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"runtime"
+	"math/big"
 	"strconv"
 	"strings"
-	"sync"
 )
 
-var deckSize = int64(119315717514047)
-var shufflesCnt = int64(101741582076661)
+var deckSize = big.NewInt(119315717514047)
+var shufflesCnt = big.NewInt(101741582076661)
 
 // ShuffleType ...
 type ShuffleType int
@@ -31,72 +30,28 @@ type ShuffleCommand struct {
 func main() {
 	cmds := readInput("input.txt")
 
-	op := repeatOp(ShuffleOp(cmds), shufflesCnt)
-	fmt.Println(findPos2020(op))
-}
-
-func findPos2020(op Operation) int64 {
-	resultC, quitC := make(chan int64, 1), make(chan struct{}, 1)
-	procs := int64(runtime.NumCPU())
-	fmt.Printf("starting %d goroutines...\n", procs)
-
-	var wg sync.WaitGroup
-	for proc := int64(0); proc < procs; proc++ {
-		chunk := deckSize / procs
-		start, end := proc*chunk, proc*chunk+chunk
-		if proc == procs-1 {
-			end = deckSize
-		}
-
-		wg.Add(1)
-		go func(proc, start, end int64, resultC chan int64) {
-			defer wg.Done()
-
-			for i := start; i < end; i++ {
-				select {
-				case <-quitC:
-					break
-				default:
-				}
-
-				percent := float64(i-start) / float64(end-start) * 100
-				if percent >= 10 && percent < 11 {
-					fmt.Printf("proc %d is at %f%%\n", proc, percent)
-				}
-
-				res := applyOp(i, op)
-				if res == 2020 {
-					resultC <- i
-					break
-				}
-			}
-		}(proc, start, end, resultC)
-	}
-
-	var res int64
-	select {
-	case res = <-resultC:
-		quitC <- struct{}{}
-	}
-
-	wg.Wait()
-	return res
+	reverseShuffle := repeatOp(ReverseShuffleOp(cmds), shufflesCnt)
+	reverseRes := applyOp(2020, reverseShuffle)
+	fmt.Println(reverseRes)
 }
 
 // Operation ...
-type Operation func() (int64, int64)
+type Operation func() (*big.Int, *big.Int)
 
-func repeatOp(op Operation, times int64) Operation {
-	if times == 1 {
+func repeatOp(op Operation, times *big.Int) Operation {
+	if times.Int64() == 1 {
 		return op
 	}
 
-	if times%2 == 0 {
-		op := repeatOp(op, times/2)
+	// if times % 2 == 0
+	if new(big.Int).Mod(times, big.NewInt(2)).Int64() == 0 {
+		// op := repeatOp(op, times/2)
+		op := repeatOp(op, new(big.Int).Div(times, big.NewInt(2)))
 		return combineOp(op, op)
 	}
 
-	return combineOp(op, repeatOp(op, times-1))
+	// return combineOp(op, repeatOp(op, times-1))
+	return combineOp(op, repeatOp(op, new(big.Int).Sub(times, big.NewInt(1))))
 }
 
 func combineOp(op1, op2 Operation) Operation {
@@ -108,14 +63,22 @@ func combineOp(op1, op2 Operation) Operation {
 
 	a1, b1 := op1()
 	a2, b2 := op2()
-	return func() (int64, int64) {
-		return (a1 * a2) % deckSize, (a2*b1 + b2) % deckSize
+	return func() (*big.Int, *big.Int) {
+		res := new(big.Int).Mul(a2, b1)
+		res.Add(res, b2)
+
+		// return modulo(a1*a2, deckSize), modulo(a2*b1 + b2, deckSize)
+		return modulo(new(big.Int).Mul(a1, a2), deckSize), modulo(res, deckSize)
 	}
 }
 
-func applyOp(pos int64, op Operation) int64 {
+func applyOp(pos int64, op Operation) *big.Int {
 	a, b := op()
-	return (a*pos + b) % deckSize
+	res := new(big.Int).Mul(a, big.NewInt(pos))
+	res.Add(res, b)
+
+	// return modulo(a*pos + b, deckSize)
+	return modulo(res, deckSize)
 }
 
 // ShuffleOp ...
@@ -124,9 +87,9 @@ func ShuffleOp(cmds []*ShuffleCommand) Operation {
 	for _, cmd := range cmds {
 		switch cmd.shuffleType {
 		case ShuffleTypeCut:
-			curr = combineOp(curr, CutNOp(cmd.arg, deckSize))
+			curr = combineOp(curr, CutNOp(big.NewInt(cmd.arg), deckSize))
 		case ShuffleTypeDeal:
-			curr = combineOp(curr, DealWithIncNOp(cmd.arg))
+			curr = combineOp(curr, DealWithIncNOp(big.NewInt(cmd.arg)))
 		case ShuffleTypeStack:
 			curr = combineOp(curr, DealStackOp(deckSize))
 		default:
@@ -137,25 +100,89 @@ func ShuffleOp(cmds []*ShuffleCommand) Operation {
 	return curr
 }
 
+// ReverseShuffleOp ...
+func ReverseShuffleOp(cmds []*ShuffleCommand) Operation {
+	curr := Operation(nil)
+	for i := len(cmds) - 1; i >= 0; i-- {
+		cmd := cmds[i]
+		switch cmd.shuffleType {
+		case ShuffleTypeCut:
+			curr = combineOp(curr, ReverseCutNOp(big.NewInt(cmd.arg), deckSize))
+		case ShuffleTypeDeal:
+			curr = combineOp(curr, ReverseDealWithIncNOp(big.NewInt(cmd.arg), deckSize))
+		case ShuffleTypeStack:
+			curr = combineOp(curr, ReverseDealStackOp(deckSize))
+		default:
+			panic("unknown shuffle type")
+		}
+	}
+
+	return curr
+}
+
 // DealStackOp ...
-func DealStackOp(length int64) Operation {
-	return func() (int64, int64) {
-		return -1, length - 1
+func DealStackOp(length *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		// return -1, length-1
+		return big.NewInt(-1), new(big.Int).Sub(length, big.NewInt(1))
+	}
+}
+
+// ReverseDealStackOp ...
+func ReverseDealStackOp(length *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		// return -1, length-1
+		return big.NewInt(-1), new(big.Int).Sub(length, big.NewInt(1))
 	}
 }
 
 // CutNOp ...
-func CutNOp(n, length int64) Operation {
-	return func() (int64, int64) {
-		return 1, length - n
+func CutNOp(n, length *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		// return 1, length-n
+		return big.NewInt(1), new(big.Int).Sub(length, n)
+	}
+}
+
+// ReverseCutNOp ...
+func ReverseCutNOp(n, length *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		// return 1, n-length
+		return big.NewInt(1), new(big.Int).Sub(n, length)
 	}
 }
 
 // DealWithIncNOp ...
-func DealWithIncNOp(n int64) Operation {
-	return func() (int64, int64) {
-		return n, 0
+func DealWithIncNOp(n *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		// return n, 0
+		return n, big.NewInt(0)
 	}
+}
+
+// ReverseDealWithIncNOp ...
+func ReverseDealWithIncNOp(n, length *big.Int) Operation {
+	return func() (*big.Int, *big.Int) {
+		a := new(big.Int).ModInverse(n, length)
+
+		// return modinv(n, length), 0
+		return a, big.NewInt(0)
+	}
+}
+
+func modulo(a, mod *big.Int) *big.Int {
+	if a.Int64() >= 0 {
+		// return a % mod
+		return new(big.Int).Mod(a, mod)
+	}
+
+	// making % operator work as 'modulo' for negative numbers
+	// e.g. -1 % 5 = 4
+
+	// return mod - (-a % mod)
+	return new(big.Int).Sub(mod,
+		new(big.Int).Mod(
+			new(big.Int).Mul(big.NewInt(-1), a), mod))
 }
 
 func readInput(filename string) []*ShuffleCommand {
