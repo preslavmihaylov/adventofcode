@@ -1,14 +1,12 @@
-package com.pmihaylov;
+package com.pmihaylov.navigationsystem;
 
 public class Location {
     public final int x;
     public final int y;
-    public final Direction direction;
 
-    public Location(int x, int y, Direction direction) {
+    public Location(int x, int y) {
         this.x = x;
         this.y = y;
-        this.direction = direction;
     }
 
     public int manhattanDistanceFrom(Location other) {
