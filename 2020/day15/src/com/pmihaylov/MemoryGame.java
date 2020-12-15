@@ -33,6 +33,12 @@ public class MemoryGame {
 
     private void persistSpokenNumberTurn(Map<Integer, List<Integer>> spokenNums, int spokenNum, int turn) {
         spokenNums.putIfAbsent(spokenNum, new ArrayList<>());
-        spokenNums.get(spokenNum).add(turn);
+        List<Integer> prevNums = spokenNums.get(spokenNum);
+        if (prevNums.size() == 2) {
+            prevNums.set(0, prevNums.get(1));
+            prevNums.set(1, turn);
+        } else {
+            prevNums.add(turn);
+        }
     }
 }
