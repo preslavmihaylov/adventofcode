@@ -34,7 +34,8 @@ end
 
 def render_screen(instructions)
   instr_idx = 0
-  instr_cycle = cycles_for_instr(instructions[instr_idx]) - 1
+  instr_cycle = cycles_for_instr(instructions[instr_idx])
+  instr_cycle -= 1
 
   xreg = 1
   for i in 0..239
@@ -45,14 +46,13 @@ def render_screen(instructions)
       print '.'
     end
 
-    if instr_cycle > 0
-      instr_cycle -= 1
-      next
+    if instr_cycle <= 0
+      xreg += instructions[instr_idx].value
+      instr_idx += 1
+      instr_cycle = cycles_for_instr(instructions[instr_idx]) if instr_idx < instructions.length
     end
 
-    xreg += instructions[instr_idx].value
-    instr_idx += 1
-    instr_cycle = cycles_for_instr(instructions[instr_idx]) - 1 if instr_idx < instructions.length
+    instr_cycle -= 1
   end
 
   print "\n"
