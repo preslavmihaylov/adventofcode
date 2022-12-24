@@ -71,18 +71,18 @@ end
 if __FILE__ == $0
   monkeys = read_input
   brackets = [
-    1_000_000_000_000, 
-    100_000_000_000, 
-    10_000_000_000, 
-    10_000_000_00, 
+    1_000_000_000_000,
+    100_000_000_000,
+    10_000_000_000,
+    10_000_000_00,
     10_000_000_0,
-    10_000_000, 
-    10_000_00, 
-    10_000_0, 
-    10_000, 
-    1000, 
-    100, 
-    10, 
+    10_000_000,
+    10_000_00,
+    10_000_0,
+    10_000,
+    1000,
+    100,
+    10,
     0
   ]
 
@@ -93,11 +93,7 @@ if __FILE__ == $0
     break if result == 0
 
     brackets.each do |bracket|
-      cnt += 1 if bracket == 0
-      if result > bracket
-        cnt += bracket / 10
-        break
-      end
+      cnt += bracket / 10 + 1 if result > bracket
     end
 
     monkeys['humn'] = ScalarOperation.new(cnt)
