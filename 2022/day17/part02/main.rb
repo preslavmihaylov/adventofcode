@@ -1,7 +1,10 @@
 #!/usr/env/bin ruby
 
 $GRID_LENGTH = 7
-$GRID_HEIGHT = 200
+$GRID_HEIGHT = 100
+$TRIM_THRESHOLD = 70
+$TRIM_SIZE = 30
+
 $rocks = [
   [['#', '#', '#', '#']],
   [
@@ -162,25 +165,13 @@ def simulate_falling_rocks(movements, times)
     break if i > times
 
     start_row = 0
-    # height = count_height(grid, start_row)
-    # total_height = height + acc_height
-    # if (acc_height + height) % 10_000 == 0
-    #   time = Time.new
-    # print "#{total_height} (delta = #{total_height - last_height})\n"
-    # last_height = total_height
-    # end
-    puts acc_height
-
-    if count_height(grid, start_row) > 120
-      acc_height += 20
-      trim_grid_by(grid, 20)
+    if count_height(grid, start_row) > $TRIM_THRESHOLD
+      acc_height += $TRIM_SIZE
+      trim_grid_by(grid, $TRIM_SIZE)
     end
 
-    print "i=#{i}\n"
     curr_state = serialize(grid, rock_index, move_index)
     if seen_states.key?(curr_state) and !found_loop
-      print "acc_height=#{acc_height}, i=#{i}, l_acc_height=#{seen_states[curr_state][0]}, l_i=#{seen_states[curr_state][1]}\n"
-      # return
       delta_height = acc_height - seen_states[curr_state][0] # 0 - acc_height
       delta_i = i - seen_states[curr_state][1] # 1 - last step i
       if delta_i > 2000
@@ -190,7 +181,6 @@ def simulate_falling_rocks(movements, times)
         end
 
         found_loop = true
-        # seen_states = {}
       end
     else
       seen_states[curr_state] = [acc_height, i]
@@ -218,7 +208,6 @@ def simulate_falling_rocks(movements, times)
 end
 
 if __FILE__ == $0
-  # expected for input-2.txt - 1580758017509
   movements = read_input
   puts simulate_falling_rocks(movements, 1_000_000_000_000)
 end
