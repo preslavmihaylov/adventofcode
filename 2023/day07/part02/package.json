@@ -1,0 +1,19 @@
+{
+  "name": "part01",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.202",
+    "assert-ts": "^0.3.4",
+    "lodash": "^4.17.21"
+  }
+}
