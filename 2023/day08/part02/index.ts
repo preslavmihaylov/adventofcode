@@ -12,7 +12,7 @@ const [instructions, graph] = parseInput(input);
 let currs = getAllStarts(graph);
 let steps = 0;
 const cycleTimes: Record<number, number> = {};
-while (currs.some((curr) => curr.id.charAt(curr.id.length - 1) !== "Z")) {
+while (Object.keys(cycleTimes).length < currs.length) {
   for (const inst of instructions) {
     assert(inst === "L" || inst === "R");
 
@@ -36,14 +36,41 @@ while (currs.some((curr) => curr.id.charAt(curr.id.length - 1) !== "Z")) {
   }
 }
 
-console.log(steps);
-
-function gcd(a: number, b: number): number {
-  if (!b) {
-    return a;
+const factors: Record<number, number> = {};
+for (const time of Object.values(cycleTimes)) {
+  const allFactors = primeFactors(time);
+  const currFactors: Record<number, number> = {};
+  for (const factor of allFactors) {
+    currFactors[factor] = (currFactors[factor] ?? 0) + 1;
   }
 
-  return gcd(b, a % b);
+  for (const keyStr of Object.keys(currFactors)) {
+    const key = parseInt(keyStr);
+    factors[key] = Math.max(factors[key] ?? 0, currFactors[key]);
+  }
+}
+
+let result = 1;
+for (const keyStr of Object.keys(factors)) {
+  const key = parseInt(keyStr);
+  result *= key * factors[key];
+}
+
+console.log(result);
+
+function primeFactors(n: number): number[] {
+  const factors = [];
+  let divisor = 2;
+
+  while (n >= 2) {
+    if (n % divisor == 0) {
+      factors.push(divisor);
+      n = n / divisor;
+    } else {
+      divisor++;
+    }
+  }
+  return factors;
 }
 
 function getAllStarts(graph: Record<string, Node>): Node[] {
