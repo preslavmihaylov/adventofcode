@@ -1,4 +1,3 @@
-// import PriorityQueue from "js-priority-queue";
 import _ from "lodash";
 import assert from "assert";
 
@@ -9,7 +8,7 @@ type Node = {
   straightCnt: number;
 };
 
-const input = await Bun.file("input_example.txt").text();
+const input = await Bun.file("input.txt").text();
 const matrix = input
   .split("\n")
   .filter((line) => line.length > 0)
@@ -17,20 +16,16 @@ const matrix = input
 
 const shortestPath: Record<string, number> = {};
 const unvisitedNodes: Node[] = [];
-for (let row = 0; row < matrix.length; row++) {
-  for (let col = 0; col < matrix[row].length; col++) {
-    const key = `${row}:${col}`;
-    shortestPath[key] = Number.MAX_SAFE_INTEGER;
-    unvisitedNodes.push({ row, col, dir: "right", straightCnt: 1 });
-  }
-}
 
-shortestPath[`0:0`] = 0;
-const previousNodes: Record<string, string> = {};
+shortestPath[`0:0:right:0`] = 0;
+unvisitedNodes.push({ row: 0, col: 0, dir: "right", straightCnt: 0 });
+const previousNodes: Record<string, Node> = {};
+let finalDestNode = getDestNode(matrix);
 while (unvisitedNodes.length > 0) {
   const currNode = getMinUnvisitedNode(shortestPath, unvisitedNodes);
   const destNode = getDestNode(matrix);
   if (currNode.row === destNode.row && currNode.col === destNode.col) {
+    finalDestNode = currNode;
     break;
   }
 
@@ -42,40 +37,16 @@ while (unvisitedNodes.length > 0) {
     const neighborKey = nodeToString(neighbor);
     const currPath =
       shortestPath[nodeKey] + parseInt(matrix[neighbor.row][neighbor.col]);
-    if (currPath < shortestPath[neighborKey]) {
+    if (currPath < (shortestPath[neighborKey] ?? Number.MAX_SAFE_INTEGER)) {
       shortestPath[neighborKey] = currPath;
-      previousNodes[neighborKey] = nodeKey;
+      previousNodes[neighborKey] = currNode;
 
-      unvisitedNodes.splice(indexOfNode(unvisitedNodes, neighbor), 1);
       unvisitedNodes.push(neighbor);
     }
   }
 }
 
-const destNode = getDestNode(matrix);
-console.log(shortestPath[nodeToString(destNode)]);
-printPath(matrix, previousNodes);
-
-function printPath(matrix: string[][], previousNodes: Record<string, string>) {
-  let currNode = nodeToString(getDestNode(matrix));
-  const path = [currNode];
-  while (previousNodes[currNode] !== undefined) {
-    currNode = previousNodes[currNode];
-    path.push(currNode);
-  }
-
-  for (let row = 0; row < matrix.length; row++) {
-    for (let col = 0; col < matrix[row].length; col++) {
-      if (path.includes(`${row}:${col}`)) {
-        process.stdout.write("*");
-      } else {
-        process.stdout.write(".");
-      }
-    }
-
-    process.stdout.write("\n");
-  }
-}
+console.log(shortestPath[nodeToString(finalDestNode)]);
 
 function getMinUnvisitedNode(
   shortestPath: Record<string, number>,
@@ -88,7 +59,9 @@ function indexOfNode(unvisitedNodes: Node[], node: Node): number {
   for (let i = 0; i < unvisitedNodes.length; i++) {
     if (
       unvisitedNodes[i].row === node.row &&
-      unvisitedNodes[i].col === node.col
+      unvisitedNodes[i].col === node.col &&
+      unvisitedNodes[i].dir === node.dir &&
+      unvisitedNodes[i].straightCnt === node.straightCnt
     ) {
       return i;
     }
@@ -213,14 +186,6 @@ function getDestNode(matrix: string[][]): Node {
   };
 }
 
-// function nodeFromString(str: string): Node {
-//   const [rowStr, colStr] = str.split(":");
-//   return {
-//     row: parseInt(rowStr),
-//     col: parseInt(colStr),
-//   };
-// }
-
 function nodeToString(node: Node): string {
-  return `${node.row}:${node.col}`;
+  return `${node.row}:${node.col}:${node.dir}:${node.straightCnt}`;
 }
