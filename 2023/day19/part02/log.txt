@@ -1,0 +1,612 @@
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 1
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 1
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 1
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 1416
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 1
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 1
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 1
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1
+  }
+}
+CALCS: 15320205000000 0
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 1416
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 2662,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 2662,
+    end: 1416
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+}
+CALCS: 14486526000000 0
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 2090,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 2006,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 2090,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 2006,
+    end: 2006
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+}
+CALCS: 20566116000000 0
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 2440
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 2090
+  },
+  a: {
+    category: "a",
+    start: 2006,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 537,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 2440
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 2090
+  },
+  a: {
+    category: "a",
+    start: 2006,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 537,
+    end: 1351
+  }
+}
+CALCS: 8259731689662 8259731689662
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 1351
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 3448,
+    end: 4001
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 3448,
+    end: 1351
+  }
+}
+CALCS: 35328000000000 0
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 4001
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 1548,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 2770,
+    end: 3448
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 1548,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 2770,
+    end: 3448
+  }
+}
+CALCS: 26560064000000 26560064000000
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 4001
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 1548
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 2770,
+    end: 3448
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 1548
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 2770,
+    end: 3448
+  }
+}
+CALCS: 16757104000000 16757104000000
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 4001
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 838,
+    end: 1801
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 1351,
+    end: 2770
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 838,
+    end: 1801
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 1351,
+    end: 2770
+  }
+}
+CALCS: 21825856000000 21825856000000
+INTERVALS: {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 4001
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 4001
+  },
+  s: {
+    category: "s",
+    start: 0,
+    end: 4001
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 838
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 1716
+  },
+  s: {
+    category: "s",
+    start: 1351,
+    end: 2770
+  }
+} {
+  x: {
+    category: "x",
+    start: 0,
+    end: 4001
+  },
+  m: {
+    category: "m",
+    start: 0,
+    end: 838
+  },
+  a: {
+    category: "a",
+    start: 0,
+    end: 1716
+  },
+  s: {
+    category: "s",
+    start: 1351,
+    end: 2770
+  }
+}
+CALCS: 8141900760000 8141900760000
+UNITED {
+  interval: {
+    x: {
+      category: "x",
+      start: 0,
+      end: 4001
+    },
+    m: {
+      category: "m",
+      start: 0,
+      end: 4001
+    },
+    a: {
+      category: "a",
+      start: 0,
+      end: 4001
+    },
+    s: {
+      category: "s",
+      start: 0,
+      end: 4001
+    }
+  },
+  result: 81544656449662
+}
+256000000000000
+ALT: 167245503449662
