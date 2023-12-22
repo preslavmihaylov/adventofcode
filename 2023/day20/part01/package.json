@@ -1,0 +1,22 @@
+{
+  "name": "part01",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/js-priority-queue": "^0.0.9",
+    "@types/lodash": "^4.14.202",
+    "assert-ts": "^0.3.4",
+    "js-priority-queue": "^0.1.5",
+    "lodash": "^4.17.21",
+    "zod": "^3.22.4"
+  }
+}
