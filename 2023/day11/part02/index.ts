@@ -11,18 +11,25 @@ let grid = input
   .filter((line) => line.length > 0)
   .map((line) => line.trim().split(""));
 
-grid = growGalaxy(grid, 1000000);
+const galaxySize = 1000000;
 const pairs = getPairs(grid);
 let sum = 0;
 for (const pair of pairs) {
-  sum += calcLength(pair);
+  sum += calcLength(pair, galaxySize - 1);
 }
 
 console.log(sum);
 
-function calcLength(pair: Pair): number {
+function calcLength(pair: Pair, galaxySize: number): number {
   const [f, s] = pair;
-  return Math.abs(f.row - s.row) + Math.abs(f.col - s.col);
+  const emptyRows = calcEmptyRowsBetween(grid, f.row, s.row);
+  const emptyCols = calcEmptyColsBetween(grid, f.col, s.col);
+  return (
+    Math.abs(f.row - s.row) +
+    Math.abs(f.col - s.col) +
+    emptyRows * galaxySize +
+    emptyCols * galaxySize
+  );
 }
 
 function getPairs(grid: string[][]): Pair[] {
@@ -50,32 +57,36 @@ function findPlanets(grid: string[][]): Coord[] {
   return coords;
 }
 
-function growGalaxy(grid: string[][], times: number): string[][] {
-  times--;
-
-  for (let col = 0; col < grid[0].length; col++) {
-    if (isEmptyCol(grid, col)) {
-      for (let i = 0; i < times; i++) {
-        for (let row = 0; row < grid.length; row++) {
-          grid[row].splice(col, 0, ".");
-        }
-      }
-
-      col += times;
-    }
-  }
-
-  for (let row = 0; row < grid.length; row++) {
+function calcEmptyRowsBetween(
+  grid: string[][],
+  startRow: number,
+  endRow: number
+): number {
+  let sum = 0;
+  let [begin, end] = [Math.min(startRow, endRow), Math.max(startRow, endRow)];
+  for (let row = begin; row < end; row++) {
     if (isEmptyRow(grid, row)) {
-      for (let i = 0; i < times; i++) {
-        grid.splice(row, 0, grid[row]);
-      }
-
-      row += times;
+      sum++;
     }
   }
 
-  return grid;
+  return sum;
+}
+
+function calcEmptyColsBetween(
+  grid: string[][],
+  startCol: number,
+  endCol: number
+): number {
+  let sum = 0;
+  let [begin, end] = [Math.min(startCol, endCol), Math.max(startCol, endCol)];
+  for (let col = begin; col < end; col++) {
+    if (isEmptyCol(grid, col)) {
+      sum++;
+    }
+  }
+
+  return sum;
 }
 
 function isEmptyRow(grid: string[][], row: number) {
