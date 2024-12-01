@@ -2,10 +2,8 @@ main = do
   input <- readFile "../input.txt"
   print $ solve $ mapInput input
 
-solve arrs = sum $ map (\x -> x * (totalOccurrences rightArr x)) leftArr
-  where
-    leftArr = fst arrs
-    rightArr = snd arrs
+solve (leftArr, rightArr) = 
+  sum $ map (\x -> x * (totalOccurrences rightArr x)) leftArr
 
 totalOccurrences elements el = sum [1 | x <- elements, x == el]
 
@@ -13,7 +11,8 @@ mapInput input = (leftArr, rightArr)
   where 
     splitLine line = [x | x <- (split ' ' line), x /= ""]
     tokens = map splitLine $ lines input
-    (leftArr, rightArr) = unzip $ map (\x -> (read (x !! 0) :: Int, read (x !! 1) :: Int)) tokens
+    asInts vals = (read (vals!!0) :: Int, read (vals!!1) :: Int)
+    (leftArr, rightArr) = unzip $ map asInts tokens
 
 split :: Eq a => a -> [a] -> [[a]]
 split d [] = []
