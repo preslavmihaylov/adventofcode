@@ -11,12 +11,9 @@ totalOccurrences elements el = sum [1 | x <- elements, x == el]
 
 mapInput input = (leftArr, rightArr)
   where 
+    splitLine line = [x | x <- (split ' ' line), x /= ""]
     tokens = map splitLine $ lines input
-    leftArr = [read (x !! 0) :: Int | x <- tokens]
-    rightArr = [read (x !! 1) :: Int | x <- tokens]
-
-
-splitLine line = [x | x <- (split ' ' line), x /= ""]
+    (leftArr, rightArr) = unzip $ map (\x -> (read (x !! 0) :: Int, read (x !! 1) :: Int)) tokens
 
 split :: Eq a => a -> [a] -> [[a]]
 split d [] = []
