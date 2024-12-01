@@ -11,8 +11,9 @@ mapInput input = (leftArr, rightArr)
   where 
     splitLine line = [x | x <- (split ' ' line), x /= ""]
     tokens = map splitLine $ lines input
-    asInts vals = (read (vals!!0) :: Int, read (vals!!1) :: Int)
-    (leftArr, rightArr) = unzip $ map asInts tokens
+    (leftArr, rightArr) = 
+      let asInts vals = (read (vals!!0) :: Int, read (vals!!1) :: Int)
+      in unzip $ map asInts tokens
 
 split :: Eq a => a -> [a] -> [[a]]
 split d [] = []
