@@ -1,5 +1,3 @@
-import Text.Regex.Posix
-
 main = do
   input <- readFile "../input.txt"
   let matrix = lines input
