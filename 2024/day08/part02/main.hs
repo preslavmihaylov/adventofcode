@@ -17,14 +17,13 @@ solve input = length antinodes
       $ genAntinodes matrix validPairs
 
 genAntinodes _ [] = []
-genAntinodes matrix pairs = [(r1, c1)] ++ antinodes ++ (genAntinodes matrix (tail pairs))
+genAntinodes matrix pairs = antinodes ++ (genAntinodes matrix (tail pairs))
   where
     pair = head pairs
     ((r1, c1), (r2, c2)) = pair
     (dr, dc) = (r1-r2, c1-c2)
-    antinodes = [(r1+dr*rep, c1+dc*rep) | rep <- [1..50]]
+    antinodes = [(r1+dr*rep, c1+dc*rep) | rep <- [0..50]]
     
-
 getPairs matrix symbols =
   [((r1, c1), (r2, c2)) |
    (r1, c1) <- symbols, 
