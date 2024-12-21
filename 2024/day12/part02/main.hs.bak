@@ -1,0 +1,90 @@
+import qualified Data.Set as Set
+import Debug.Trace
+
+-- this doesn't work because the C shape fails as sometimes visitedRows/cols is wrong.
+-- The solution needs to use some other approach instead.
+-- 
+-- What we can do instead is track all (r,c) pairs that account for the perimeter and then we can deduplicate them
+-- based on the manhattan distance between each pair, ie (1,1) and (1,2) account for the same side, because distance is 1, but
+-- if distance is anything greater than 1, it's a different side.
+main = do
+  input <- readFile "../example_input1.txt"
+  print $ solve input
+
+solve input = trace input $ allPerimeters
+  where
+    matrix = lines input
+    poss = allPositions matrix
+    allAreas = areas matrix Set.empty poss
+    allPerimeters = perimeters matrix Set.empty poss
+
+areas _ _ [] = []
+areas matrix visited ((r,c):poss) = carea:nareas
+  where
+    (carea, nvisited) = 
+      area matrix visited (r,c) ((matrix!!r)!!c)
+    nareas = areas matrix nvisited poss
+
+area matrix visited (r,c) symbol 
+  | not $ isInBounds matrix (r,c) = (0, visited)
+  | Set.member (r,c) visited      = (0, visited)
+  | ((matrix!!r)!!c) == symbol    = (1 + nresult, nvisited)
+  | otherwise                     = (0, visited)
+  where
+    (resUp, visitedUp) = 
+      area matrix (Set.insert (r,c) visited) (r-1,c) symbol
+    (resRight, visitedRight) = 
+      area matrix (Set.insert (r,c) visitedUp) (r,c+1) symbol
+    (resDown, visitedDown) = 
+      area matrix (Set.insert (r,c) visitedRight) (r+1,c) symbol
+    (resLeft, visitedLeft) = 
+      area matrix (Set.insert (r,c) visitedDown) (r,c-1) symbol
+    nresult = resUp + resRight + resDown + resLeft
+    nvisited = Set.insert (r,c) visitedLeft
+
+perimeters _ _ [] = []
+perimeters matrix visited ((r,c):poss) = cperimeter:nperimeters
+  where
+    (cperimeter, nvisited, _, _) = 
+      perimeter matrix visited Set.empty Set.empty (r,c) ((matrix!!r)!!c) ""
+    nperimeters = perimeters matrix nvisited poss
+
+perimeter matrix visited visitedRows visitedCols (r,c) symbol fromDir
+  | notInBoundsCheck = (1, visited, cvisitedRows, cvisitedCols)
+  | not $ isInBounds matrix (r,c) = (0, visited, visitedRows, visitedCols)
+  | (((matrix!!r)!!c) /= symbol) && (Set.member r visitedRows) = (0, visited, visitedRows, visitedCols)
+  | (((matrix!!r)!!c) /= symbol) && (Set.member c visitedCols) = (0, visited, visitedRows, visitedCols)
+  | (((matrix!!r)!!c) == symbol) && (Set.member (r,c) visited) = (0, visited, visitedRows, visitedCols)
+  | ((matrix!!r)!!c) /= symbol    = (1, visited, cvisitedRows, cvisitedCols)
+  | otherwise                     = trace dbgLog $ (0 + nresult, nvisited, nvisitedRows, nvisitedCols)
+  where
+    notInBoundsCheck = 
+      (not $ isInBounds matrix (r,c)) && 
+        (not $ Set.member r visitedRows) &&
+        (not $ Set.member c visitedCols)
+    (cvisitedRows, cvisitedCols)
+      | fromDir == "up"    = (Set.insert r visitedRows, visitedCols)
+      | fromDir == "down"  = (Set.insert r visitedRows, visitedCols)
+      | fromDir == "left"  = (visitedRows, Set.insert c visitedCols)
+      | fromDir == "right" = (visitedRows, Set.insert c visitedCols)
+      | otherwise          = (visitedRows, visitedCols)
+    cvisited = Set.insert (r,c) visited
+    (resUp, visitedUp, visitedRowsUp, visitedColsUp) = 
+      perimeter matrix cvisited visitedRows visitedCols (r-1,c) symbol "down"
+    (resRight, visitedRight, visitedRowsRight, visitedColsRight) = 
+      perimeter matrix visitedUp visitedRowsUp visitedColsUp (r,c+1) symbol "left"
+    (resDown, visitedDown, visitedRowsDown, visitedColsDown) =
+      perimeter matrix visitedRight visitedRowsRight visitedColsRight (r+1,c) symbol "up"
+    (resLeft, visitedLeft, visitedRowsLeft, visitedColsLeft) = 
+      perimeter matrix visitedDown visitedRowsDown visitedColsDown (r,c-1) symbol "right"
+    nresult = resUp + resRight + resDown + resLeft
+    (nvisited, nvisitedRows, nvisitedCols) = (visitedLeft, visitedRowsLeft, visitedColsLeft)
+    dbgLog = "s: " ++ (show symbol) ++ " p: " ++ (show (r,c)) ++ " u: " ++ (show resUp) ++ " r: " ++ (show resRight) ++ " d: " ++ (show resDown) ++ " l: " ++ (show resLeft)
+
+allPositions matrix = 
+  [(x, y) | 
+    x <- [0..(length matrix - 1)], 
+    y <- [0..(length (matrix !! 0) - 1)]]
+
+isInBounds matrix (r,c) = 
+  r >= 0 && r < length matrix && c >= 0 && c < length (matrix !! 0)
